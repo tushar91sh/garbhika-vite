@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useSelector } from 'react-redux'
 
 const servicesMenu = [
   { icon: 'auto_awesome', title: 'Garbh Sanskar & Coaching', description: 'Mindful prenatal practices', to: '/services/garbh-sanskar/' },
@@ -30,6 +31,9 @@ const mobileLink = ({ isActive }) =>
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const user = useSelector((state) => state.auth.user)
+  const accountTo = user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'
+  const accountLabel = user ? (user.role === 'admin' ? 'Admin dashboard' : 'My dashboard') : 'Log in'
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -147,8 +151,9 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <Link
-              to="/login"
-              aria-label="Log in"
+              to={accountTo}
+              aria-label={accountLabel}
+              title={accountLabel}
               className="grid h-10 w-10 place-items-center rounded-full text-[#4d444c] no-underline transition-colors hover:bg-[#efe5ee] hover:text-[#0f0014]"
             >
               <span className="material-symbols-outlined !text-[21px]">person</span>
@@ -214,8 +219,8 @@ export default function Navbar() {
               <NavLink to="/contact-us/" className={mobileLink}>
                 Contact Us
               </NavLink>
-              <NavLink to="/login" className={mobileLink}>
-                Log In
+              <NavLink to={accountTo} className={mobileLink}>
+                {accountLabel}
               </NavLink>
             </div>
             <Link
