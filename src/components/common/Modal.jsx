@@ -18,9 +18,9 @@ export default function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center px-margin-mobile">
+    <div className="fixed inset-0 z-[60] grid place-items-center p-4">
       <div
-        className="absolute inset-0 bg-charcoal-plum/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-[rgba(26,22,28,0.55)] backdrop-blur-[6px]"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -28,14 +28,14 @@ export default function Modal({ isOpen, onClose, title, children }) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative bg-surface-bright rounded-2xl shadow-xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-[520px] max-h-[calc(100vh-32px)] overflow-y-auto rounded-[28px] bg-[#fff7fd] p-8 shadow-[0_30px_90px_rgba(15,0,20,0.35)]"
       >
-        <div className="flex items-start justify-between mb-6">
-          <h3 className="font-headline-md text-headline-md text-primary pr-4">{title}</h3>
+        <div className="flex items-start justify-between gap-4 mb-6">
+          <h3 className="m-0 pr-4 font-['Playfair_Display',serif] text-[28px] font-medium leading-[1.2] text-[#0f0014]">{title}</h3>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="text-on-surface-variant hover:text-primary transition-colors"
+            className="grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-full border-0 bg-[#efe5ee] text-[#0f0014] transition-colors hover:bg-[#e2ddf5]"
           >
             <span className="material-symbols-outlined">close</span>
           </button>

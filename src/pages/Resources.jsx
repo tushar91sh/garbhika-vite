@@ -6,8 +6,14 @@ import FadeIn from '../components/motion/FadeIn.jsx'
 import { StaggerGrid, StaggerItem } from '../components/motion/StaggerGrid.jsx'
 import { subscribeNewsletter, resetNewsletterStatus } from '../features/newsletter/newsletterSlice.js'
 import { isValidEmail } from '../utils/validators.js'
-import Button from '../components/common/Button.jsx'
-import { ServiceSection, BulletList, RelatedLinks } from '../components/common/ServiceLayout.jsx'
+import {
+  SubpageHero,
+  PillLink,
+  PillLinkSm,
+  serif,
+  wrap,
+  bandClass,
+} from '../components/common/DesignKit.jsx'
 
 const guideTopics = [
   'First trimester pregnancy',
@@ -17,6 +23,38 @@ const guideTopics = [
   'Pregnancy timeline',
   'Pregnancy week-by-week information',
 ]
+
+const topics = [
+  {
+    icon: 'restaurant',
+    heading: 'Pregnancy Nutrition',
+    body: 'Learn about pregnancy diet, healthy eating, foods to eat during pregnancy and nutritional considerations.',
+    links: [{ label: 'Pregnancy Nutrition', to: '/services/pregnancy-nutrition/' }],
+  },
+  {
+    icon: 'self_improvement',
+    heading: 'Prenatal Yoga',
+    body: 'Discover information about pregnancy yoga, prenatal yoga, pregnancy exercises and movement during pregnancy.',
+    links: [{ label: 'Pregnancy Yoga', to: '/services/pregnancy-yoga/' }],
+  },
+  {
+    icon: 'auto_awesome',
+    heading: 'Garbh Sanskar',
+    body: 'Learn about Garbh Sanskar, traditional prenatal practices, activities and related approaches to mindful pregnancy.',
+    links: [{ label: 'Garbh Sanskar', to: '/services/garbh-sanskar/' }],
+  },
+  {
+    icon: 'spa',
+    heading: 'Mental & Emotional Wellbeing',
+    body: 'Explore information about pregnancy stress, emotional changes, mindfulness, relaxation and mental wellbeing.',
+    links: [
+      { label: 'Psychological Support', to: '/services/psychological-support/' },
+      { label: 'Mental Wellness', to: '/services/mental-wellness/' },
+    ],
+  },
+]
+
+const iconBadge = 'grid h-12 w-12 place-items-center rounded-[14px] bg-[#efe5ee] text-[#0f0014]'
 
 export default function Resources() {
   const [activeCategory, setActiveCategory] = useState('All')
@@ -57,167 +95,206 @@ export default function Resources() {
     }
   }
 
+  const loading = status === 'loading'
+
   return (
     <div>
-      <section className="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-16 md:pt-24 pb-12">
-        <FadeIn className="max-w-3xl space-y-6">
-          <span className="block font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">
-            Resources
-          </span>
-          <h1 className="font-display-lg text-display-lg text-primary text-[40px] md:text-[56px] leading-tight">
-            Pregnancy Resources &amp; Education
-          </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-            Pregnancy can bring many questions. Garbhika&apos;s resources provide educational information
-            covering pregnancy wellness, nutrition, movement, emotional wellbeing and different stages of
-            pregnancy.
-          </p>
+      <SubpageHero eyebrow="Resources" title="Pregnancy Resources & Education">
+        Pregnancy can bring many questions. Garbhika&apos;s resources provide educational information
+        covering pregnancy wellness, nutrition, movement, emotional wellbeing and different stages of
+        pregnancy.
+      </SubpageHero>
+
+      {/* Guides & topics */}
+      <section className={bandClass}>
+        <div className={`${wrap} py-[clamp(56px,8vw,96px)]`}>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] gap-4">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-6 rounded-[26px] border border-[rgba(208,195,205,0.5)] bg-white p-[30px] [grid-column:1/-1]">
+              <div className="flex flex-col items-start gap-[14px]">
+                <span className={iconBadge}>
+                  <span className="material-symbols-outlined">menu_book</span>
+                </span>
+                <h3 className={`${serif} m-0 text-[26px] font-medium text-[#0f0014]`}>Pregnancy Guides</h3>
+                <PillLink to="/pregnancy-journey/">Pregnancy Journey</PillLink>
+              </div>
+              <ul className="m-0 flex list-none flex-wrap content-start gap-2 p-0">
+                {guideTopics.map((g) => (
+                  <li
+                    key={g}
+                    className="rounded-full border border-[rgba(208,195,205,0.55)] bg-[#faf1fa] px-4 py-[10px] text-sm text-[#1e1a20]"
+                  >
+                    {g}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {topics.map((topic) => (
+              <div
+                key={topic.heading}
+                className="flex flex-col gap-[14px] rounded-[26px] border border-[rgba(208,195,205,0.5)] bg-white p-[30px]"
+              >
+                <span className={iconBadge}>
+                  <span className="material-symbols-outlined">{topic.icon}</span>
+                </span>
+                <h3 className={`${serif} m-0 text-[24px] font-medium text-[#0f0014]`}>{topic.heading}</h3>
+                <p className="m-0 flex-1 text-[15px] leading-[1.65] text-[#4d444c]">{topic.body}</p>
+                <div className="flex flex-wrap gap-2">
+                  {topic.links.map((l) => (
+                    <PillLinkSm key={l.to} to={l.to}>
+                      {l.label}
+                    </PillLinkSm>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured article */}
+      <section className={`${wrap} pb-[72px] pt-24`}>
+        <FadeIn
+          as="article"
+          className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,400px),1fr))] overflow-hidden rounded-[32px] bg-[#0f0014]"
+        >
+          <img
+            src={featured.image}
+            alt={featured.title}
+            className="block h-full min-h-[320px] w-full object-cover"
+          />
+          <div className="flex flex-col justify-center gap-[18px] p-[clamp(28px,5vw,56px)]">
+            <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#e9b5ed]">
+              Featured · {featured.category} · {featured.readTime}
+            </span>
+            <h2 className={`${serif} m-0 text-[clamp(28px,3.4vw,40px)] font-medium leading-[1.2] text-[#fff7fd]`}>
+              {featured.title}
+            </h2>
+            <p className="m-0 text-[17px] leading-[1.65] text-[rgba(255,247,253,0.78)]">{featured.excerpt}</p>
+            <span className="inline-flex items-center gap-[6px] text-[15px] font-medium text-[#fff7fd]">
+              Read the full guide <span className="material-symbols-outlined !text-[18px]">arrow_forward</span>
+            </span>
+          </div>
         </FadeIn>
       </section>
 
-      <ServiceSection heading="Pregnancy Guides" tint>
-        <BulletList items={guideTopics} columns={2} />
-        <RelatedLinks links={[{ label: 'Pregnancy Journey', to: '/pregnancy-journey/' }]} />
-      </ServiceSection>
-
-      <ServiceSection heading="Pregnancy Nutrition">
-        <p>Learn about pregnancy diet, healthy eating, foods to eat during pregnancy and nutritional considerations.</p>
-        <RelatedLinks links={[{ label: 'Pregnancy Nutrition', to: '/services/pregnancy-nutrition/' }]} />
-      </ServiceSection>
-
-      <ServiceSection heading="Prenatal Yoga" tint>
-        <p>Discover information about pregnancy yoga, prenatal yoga, pregnancy exercises and movement during pregnancy.</p>
-        <RelatedLinks links={[{ label: 'Pregnancy Yoga', to: '/services/pregnancy-yoga/' }]} />
-      </ServiceSection>
-
-      <ServiceSection heading="Garbh Sanskar">
-        <p>Learn about Garbh Sanskar, traditional prenatal practices, activities and related approaches to mindful pregnancy.</p>
-        <RelatedLinks links={[{ label: 'Garbh Sanskar', to: '/services/garbh-sanskar/' }]} />
-      </ServiceSection>
-
-      <ServiceSection heading="Mental & Emotional Wellbeing" tint>
-        <p>Explore information about pregnancy stress, emotional changes, mindfulness, relaxation and mental wellbeing.</p>
-        <RelatedLinks
-          links={[
-            { label: 'Psychological Support', to: '/services/psychological-support/' },
-            { label: 'Mental Wellness', to: '/services/mental-wellness/' },
-          ]}
-        />
-      </ServiceSection>
-
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-section-padding space-y-section-padding">
-      {/* Featured article */}
-      <FadeIn className="bg-surface-container-low rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row">
-        <div className="md:w-1/2 h-64 md:h-auto">
-          <img src={featured.image} alt={featured.title} className="w-full h-full object-cover" />
+      {/* Filters + resource grid */}
+      <section className={`${wrap} pb-28`}>
+        <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {resourceCategories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                aria-pressed={activeCategory === category}
+                className={`cursor-pointer rounded-full border px-[18px] py-[10px] text-sm transition-colors ${
+                  activeCategory === category
+                    ? 'border-[#0f0014] bg-[#0f0014] text-white'
+                    : 'border-[rgba(208,195,205,0.7)] bg-white text-[#4d444c] hover:border-[#0f0014] hover:text-[#0f0014]'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+          <label className="flex flex-[0_1_300px] items-center gap-2 rounded-full border border-[rgba(208,195,205,0.7)] bg-white px-4">
+            <span className="material-symbols-outlined !text-[20px] text-[#7f747d]">search</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search resources..."
+              className="min-w-0 flex-1 border-0 bg-transparent py-3 text-[15px] text-[#1e1a20] outline-none"
+            />
+          </label>
         </div>
-        <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center space-y-4">
-          <span className="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">
-            Featured · {featured.category} · {featured.readTime}
-          </span>
-          <h2 className="font-headline-lg text-[28px] md:text-headline-lg text-primary leading-snug">{featured.title}</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant">{featured.excerpt}</p>
-          <span className="text-primary font-body-md text-body-md w-fit hover:opacity-70 transition-opacity">
-            Read the full guide &rarr;
-          </span>
-        </div>
-      </FadeIn>
 
-      <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {resourceCategories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full font-body-md text-sm transition-colors duration-200 ${
-                activeCategory === category
-                  ? 'bg-primary text-on-primary'
-                  : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-variant'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        <div className="relative w-full md:w-72">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">
-            search
-          </span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search resources..."
-            className="w-full rounded-full border border-surface-variant bg-surface pl-10 pr-4 py-2.5 font-body-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
-        </div>
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-center text-on-surface-variant font-body-md py-16">
-          No resources match your search yet. Try a different keyword or category.
-        </p>
-      ) : (
-        <StaggerGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-          {filtered.map((resource) => (
-            <StaggerItem key={resource.id}>
-              <article className="bg-surface-container-low rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-                <div className="h-48 overflow-hidden">
+        {filtered.length === 0 ? (
+          <p className="m-0 rounded-3xl bg-[#faf1fa] px-6 py-12 text-center text-base text-[#4d444c]">
+            No resources match your search yet. Try a different keyword or category.
+          </p>
+        ) : (
+          <StaggerGrid className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-5">
+            {filtered.map((resource) => (
+              <StaggerItem key={resource.id} className="h-full">
+                <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-[rgba(208,195,205,0.5)] bg-white transition-[box-shadow,transform] duration-[250ms] ease-in-out hover:-translate-y-[3px] hover:shadow-[0_22px_55px_rgba(51,13,59,0.12)]">
                   <img
                     src={resource.image}
                     alt={resource.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     loading="lazy"
+                    className="block aspect-[16/10] w-full object-cover"
                   />
-                </div>
-                <div className="p-6 flex flex-col flex-grow space-y-3">
-                  <span className="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">
-                    {resource.category} · {resource.readTime}
-                  </span>
-                  <h3 className="font-headline-md text-[20px] text-primary leading-snug">{resource.title}</h3>
-                  <p className="font-body-md text-body-md text-on-surface-variant flex-grow">{resource.excerpt}</p>
-                  <span className="text-primary font-body-md text-sm hover:opacity-70 transition-opacity w-fit">
-                    Read More &rarr;
-                  </span>
-                </div>
-              </article>
-            </StaggerItem>
-          ))}
-        </StaggerGrid>
-      )}
+                  <div className="flex flex-1 flex-col gap-[10px] px-6 pb-[26px] pt-[22px]">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#7a4f80]">
+                      {resource.category} · {resource.readTime}
+                    </span>
+                    <h3 className={`${serif} m-0 text-[21px] font-medium leading-[1.3] text-[#0f0014]`}>
+                      {resource.title}
+                    </h3>
+                    <p className="m-0 flex-1 text-[15px] leading-[1.6] text-[#4d444c]">{resource.excerpt}</p>
+                    <span className="inline-flex items-center gap-[6px] text-sm font-medium text-[#0f0014]">
+                      Read More <span className="material-symbols-outlined !text-[16px]">arrow_forward</span>
+                    </span>
+                  </div>
+                </article>
+              </StaggerItem>
+            ))}
+          </StaggerGrid>
+        )}
+      </section>
 
-      {/* Newsletter */}
-      <FadeIn className="bg-primary rounded-2xl px-8 py-12 md:px-16 text-center space-y-6">
-        <h2 className="font-headline-lg text-headline-lg text-surface-bright">Never Miss a New Guide</h2>
-        <p className="font-body-md text-body-md text-surface-bright/80 max-w-lg mx-auto">
-          One thoughtful email a month with our newest resources, curated by our expert circle.
-        </p>
-        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-          <div className="flex-1">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              aria-label="Email address"
-              className="w-full rounded-full border border-surface-bright/30 bg-surface-bright/10 text-surface-bright placeholder:text-surface-bright/60 px-5 py-3 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-surface-bright/50"
-            />
-            {emailError && <p className="text-error-container text-sm mt-2">{emailError}</p>}
+      {/* Newsletter + continue learning */}
+      <section className={`${wrap} pt-28`}>
+        <FadeIn className="flex flex-wrap items-center justify-between gap-7 rounded-[32px] bg-[#e2ddf5] p-[clamp(32px,5vw,56px)]">
+          <div className="flex-[1_1_320px]">
+            <h2 className={`${serif} m-0 mb-2 text-[clamp(28px,3.4vw,38px)] font-medium text-[#0f0014]`}>
+              Never Miss a New Guide
+            </h2>
+            <p className="m-0 text-base leading-[1.6] text-[#474558]">
+              One thoughtful email a month with our newest resources, curated by our expert circle.
+            </p>
           </div>
-          <Button type="submit" variant="secondary" className="!bg-surface-bright !text-primary" isLoading={status === 'loading'}>
-            Subscribe
-          </Button>
-        </form>
-      </FadeIn>
-      </div>
+          <form onSubmit={handleSubscribe} className="flex flex-col gap-[6px]">
+            <div className="flex flex-wrap gap-2 rounded-full bg-[#fff7fd] p-[6px]">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                aria-label="Email address"
+                className="min-w-0 flex-[1_1_200px] border-0 bg-transparent px-4 py-3 text-base outline-none"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-[#0f0014] px-[22px] py-[13px] text-[15px] text-white transition-colors hover:bg-[#330d3b] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading && (
+                  <span
+                    className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                    aria-hidden="true"
+                  />
+                )}
+                Subscribe
+              </button>
+            </div>
+            {emailError && <span className="pl-4 text-[13px] text-[#ba1a1a]">{emailError}</span>}
+          </form>
+        </FadeIn>
 
-      <ServiceSection heading="Continue Learning" tint>
-        <p>
-          Our resources are intended to support education and awareness. They do not replace personalised
-          medical advice or professional healthcare.
-        </p>
-        <RelatedLinks links={[{ label: 'Pregnancy Journey', to: '/pregnancy-journey/' }]} />
-      </ServiceSection>
+        <div className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] items-start gap-x-16 gap-y-5">
+          <h2 className={`${serif} m-0 text-[clamp(28px,3.2vw,36px)] font-medium text-[#0f0014]`}>
+            Continue Learning
+          </h2>
+          <div className="flex flex-col items-start gap-4">
+            <p className="m-0 text-[17px] leading-[1.7] text-[#4d444c]">
+              Our resources are intended to support education and awareness. They do not replace personalised
+              medical advice or professional healthcare.
+            </p>
+            <PillLink to="/pregnancy-journey/">Pregnancy Journey</PillLink>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

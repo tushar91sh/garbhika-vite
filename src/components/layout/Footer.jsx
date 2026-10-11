@@ -72,33 +72,35 @@ export default function Footer() {
     }
   }
 
+  const serif = "font-['Playfair_Display',serif]"
+
   return (
-    <footer className="bg-surface-container-low/90 w-full pt-20 md:pt-28 border-t border-outline-variant/40">
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+    <footer className="w-full border-t border-[rgba(208,195,205,0.4)] bg-[#faf1fa] pt-24">
+      <div className="mx-auto max-w-[1200px] px-6">
         {/* Newsletter band */}
-        <div className="relative overflow-hidden bg-primary rounded-[32px] px-8 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8 mb-16 shadow-[0_28px_80px_rgba(15,0,20,0.18)]">
-          <div className="text-center md:text-left">
-            <h3 className="font-headline-md text-headline-md text-surface-bright mb-2">Join the Sanctuary Newsletter</h3>
-            <p className="font-body-md text-body-md text-surface-bright/80 max-w-md">
+        <div className="mb-16 flex flex-wrap items-center justify-between gap-8 rounded-[32px] bg-[#0f0014] p-[clamp(32px,5vw,56px)] shadow-[0_28px_80px_rgba(15,0,20,0.18)]">
+          <div className="flex-[1_1_320px]">
+            <h3 className={`${serif} m-0 mb-2 text-[32px] font-medium leading-[1.3] text-[#fff7fd]`}>Join the Sanctuary Newsletter</h3>
+            <p className="m-0 max-w-[440px] text-base leading-[1.6] text-[rgba(255,247,253,0.8)]">
               One thoughtful email a month — new resources, expert insights, and community highlights.
             </p>
           </div>
-          <form onSubmit={handleSubscribe} className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
-            <div>
+          <form onSubmit={handleSubscribe} noValidate className="flex flex-[0_1_auto] flex-wrap gap-3">
+            <div className="flex flex-col gap-[6px]">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 aria-label="Email address"
-                className="w-full sm:w-64 rounded-full border border-surface-bright/30 bg-surface-bright/10 text-surface-bright placeholder:text-surface-bright/60 px-5 py-3.5 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-surface-bright/50"
+                className="w-[260px] max-w-full rounded-full border border-[rgba(255,247,253,0.3)] bg-[rgba(255,247,253,0.1)] px-5 py-[14px] text-base text-[#fff7fd] outline-none placeholder:text-[rgba(255,247,253,0.6)] focus:border-[rgba(255,247,253,0.6)]"
               />
-              {error && <p className="text-error-container text-sm mt-2 pl-2">{error}</p>}
+              {error && <span className="pl-2 text-[13px] text-[#ffdad6]">{error}</span>}
             </div>
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="bg-surface-bright text-primary rounded-full px-6 py-3.5 font-body-md text-body-md shadow-sm hover:-translate-y-0.5 hover:shadow-lg transition-all disabled:opacity-60 whitespace-nowrap"
+              className="cursor-pointer self-start whitespace-nowrap rounded-full border-0 bg-[#fff7fd] px-6 py-[14px] text-base font-medium text-[#0f0014] transition-colors hover:bg-[#fed6ff] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
             </button>
@@ -106,12 +108,12 @@ export default function Footer() {
         </div>
 
         {/* Link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 gap-y-12 pb-14 text-left">
-          <div className="col-span-2 space-y-4">
-            <Link to="/" className="font-headline-md text-[30px] text-primary block w-fit">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-x-8 gap-y-12 pb-14">
+          <div className="flex min-w-0 flex-col gap-4 sm:col-span-2">
+            <Link to="/" className={`${serif} w-fit text-[30px] text-[#0f0014] no-underline`}>
               Garbhika
             </Link>
-            <p className="font-body-md text-sm text-on-surface-variant max-w-xs">
+            <p className="m-0 max-w-[320px] text-sm leading-[1.6] text-[#4d444c]">
               A sanctuary of holistic care for the modern South Asian mother — from the first thought of
               motherhood through the fourth trimester and beyond.
             </p>
@@ -123,9 +125,9 @@ export default function Footer() {
                   aria-label={social.label}
                   target={social.href.startsWith('http') ? '_blank' : undefined}
                   rel={social.href.startsWith('http') ? 'noreferrer' : undefined}
-                  className="w-10 h-10 rounded-full border border-outline-variant/60 bg-surface-bright flex items-center justify-center text-on-surface-variant hover:-translate-y-0.5 hover:bg-primary hover:text-on-primary transition-all duration-300"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-[rgba(208,195,205,0.6)] bg-[#fff7fd] text-[#4d444c] no-underline transition-colors hover:bg-[#0f0014] hover:text-white"
                 >
-                  <span className="material-symbols-outlined text-lg">{social.icon}</span>
+                  <span className="material-symbols-outlined !text-lg">{social.icon}</span>
                 </a>
               ))}
             </div>
@@ -133,17 +135,12 @@ export default function Footer() {
 
           {columns.map((column) => (
             <div key={column.heading}>
-              <h4 className="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase mb-4">
-                {column.heading}
-              </h4>
-              <ul className="space-y-3">
+              <h4 className="m-0 mb-4 text-[12px] font-bold uppercase tracking-[0.12em] text-[#4d444c]">{column.heading}</h4>
+              <ul className="m-0 grid list-none gap-3 p-0">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      to={link.fallback || link.to}
-                      className="group inline-flex items-center gap-1 font-body-md text-sm text-on-surface-variant hover:text-primary transition-colors duration-300"
-                    >
-                      {link.label}<span className="material-symbols-outlined text-[13px] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                    <Link to={link.fallback || link.to} className="text-sm text-[#4d444c] no-underline transition-colors hover:text-[#0f0014]">
+                      {link.label}
                     </Link>
                   </li>
                 ))}
@@ -152,13 +149,13 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-surface-variant py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-body-md text-body-md text-on-surface-variant text-sm text-center md:text-left max-w-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#e9e0e8] py-8">
+          <p className="m-0 max-w-[680px] text-sm leading-[1.6] text-[#4d444c]">
             © {new Date().getFullYear()} Garbhika. All rights reserved. Medical Disclaimer: Our support is
             complementary to clinical care and does not replace medical advice.
           </p>
-          <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-            <span className="material-symbols-outlined text-base">verified</span>
+          <div className="flex items-center gap-2 text-sm text-[#4d444c]">
+            <span className="material-symbols-outlined !text-lg">verified</span>
             Trusted by 12,000+ mothers across India
           </div>
         </div>

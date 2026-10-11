@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import FormField from '../components/forms/FormField.jsx'
-import Button from '../components/common/Button.jsx'
+import AuthShell, { PasswordField } from '../components/common/AuthShell.jsx'
+import { DcField, PrimaryButton } from '../components/common/DesignKit.jsx'
 import { loginUser } from '../features/auth/authSlice.js'
 import { validateAuthForm } from '../utils/validators.js'
 
@@ -35,16 +35,16 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-margin-mobile py-section-padding">
-      <div className="text-center mb-10 space-y-3">
-        <h1 className="font-headline-lg text-headline-lg text-primary">Welcome Back</h1>
-        <p className="font-body-md text-body-md text-on-surface-variant">
-          Log in to continue your journey with Garbhika.
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} noValidate className="bg-surface-container-low rounded-2xl p-8 space-y-6">
-        <FormField
+    <AuthShell
+      mode="login"
+      title="Welcome Back"
+      subtitle="Log in to continue your journey with Garbhika."
+      switchText="New to Garbhika?"
+      switchLabel="Create an account"
+      switchTo="/signup"
+    >
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <DcField
           label="Email Address"
           name="email"
           type="email"
@@ -53,26 +53,11 @@ export default function Login() {
           error={errors.email}
           placeholder="you@example.com"
         />
-        <FormField
-          label="Password"
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          error={errors.password}
-          placeholder="••••••••"
-        />
-        <Button type="submit" className="w-full" isLoading={status === 'loading'}>
+        <PasswordField value={form.password} onChange={handleChange} error={errors.password} placeholder="••••••••" />
+        <PrimaryButton type="submit" className="mt-1" isLoading={status === 'loading'}>
           {status === 'loading' ? 'Logging In...' : 'Log In'}
-        </Button>
+        </PrimaryButton>
       </form>
-
-      <p className="text-center font-body-md text-body-md text-on-surface-variant mt-6">
-        New to Garbhika?{' '}
-        <Link to="/signup" className="text-primary hover:opacity-70 transition-opacity">
-          Create an account
-        </Link>
-      </p>
-    </div>
+    </AuthShell>
   )
 }
