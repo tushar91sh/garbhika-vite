@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { submitBooking } from '../features/booking/bookingSlice.js'
 import { validateBookingForm } from '../utils/validators.js'
-import { Eyebrow, DcField, PrimaryButton, PillLink, serif, h2SmallClass } from '../components/common/DesignKit.jsx'
+import { get } from '../api/client.js'
+import { Eyebrow, DcField, PrimaryButton, PillLink, serif, h2SmallClass, fieldClass } from '../components/common/DesignKit.jsx'
 
 const interestOptions = [
   ['Garbh Sanskar', 'auto_awesome'],
@@ -15,7 +16,7 @@ const interestOptions = [
   ['Community support', 'forum'],
 ]
 
-const initialForm = { name: '', email: '', preferredDate: '', notes: '' }
+const initialForm = { name: '', email: '', preferredDate: '', timeSlot: '', notes: '' }
 
 export default function BookConsultation() {
   const dispatch = useDispatch()
@@ -23,6 +24,17 @@ export default function BookConsultation() {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [interests, setInterests] = useState([])
+  const [slots, setSlots] = useState([])
+
+  // Load which times are still free whenever the date changes.
+  useEffect(() => {
+    if (!form.preferredDate) return setSlots([])
+    let active = true
+    get(`/bookings/availability?date=${form.preferredDate}`)
+      .then((data) => active && setSlots(data.slots))
+      .catch(() => active && setSlots([]))
+    return () => { active = false }
+  }, [form.preferredDate])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -43,6 +55,7 @@ export default function BookConsultation() {
       await dispatch(submitBooking({ ...form, interests })).unwrap()
       toast.success("Thank you — we've received your request and will confirm by email shortly.")
       setForm(initialForm)
+      setSlots([])
       setInterests([])
     } catch {
       toast.error('Something went wrong sending your request. Please try again.')
@@ -104,6 +117,18 @@ export default function BookConsultation() {
               <DcField label="Email Address" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} placeholder="you@example.com" />
             </div>
             <DcField label="Preferred Date" name="preferredDate" type="date" value={form.preferredDate} onChange={handleChange} error={errors.preferredDate} />
+            <label htmlFor="timeSlot" className="flex flex-col gap-[6px] text-[13px] font-semibold text-[#1e1a20]">
+              Preferred Time
+              <select id="timeSlot" name="timeSlot" value={form.timeSlot} onChange={handleChange} disabled={!form.preferredDate} aria-invalid={!!errors.timeSlot} className={`${fieldClass} ${errors.timeSlot ? '!border-[#ba1a1a]' : ''}`}>
+                <option value="">{form.preferredDate ? 'Choose a time' : 'Select a date first'}</option>
+                {slots.map((slot) => (
+                  <option key={slot.time} value={slot.time} disabled={!slot.available}>
+                    {slot.time}{slot.available ? '' : ' (booked)'}
+                  </option>
+                ))}
+              </select>
+              {errors.timeSlot && <span className="font-normal text-[#ba1a1a]">{errors.timeSlot}</span>}
+            </label>
             <DcField
               label="Anything you'd like to share (optional)"
               name="notes"
