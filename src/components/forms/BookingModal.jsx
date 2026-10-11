@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import Modal from '../common/Modal.jsx'
-import FormField from './FormField.jsx'
-import Button from '../common/Button.jsx'
+import { DcField, PrimaryButton } from '../common/DesignKit.jsx'
 import { closeBookingModal, submitBooking } from '../../features/booking/bookingSlice.js'
 import { validateBookingForm } from '../../utils/validators.js'
 
@@ -45,9 +44,9 @@ export default function BookingModal() {
 
   return (
     <Modal isOpen={isModalOpen} onClose={handleClose} title={`Book a Session with ${activeExpert?.name || ''}`}>
-      <p className="font-body-md text-body-md text-on-surface-variant mb-6">{activeExpert?.role}</p>
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
-        <FormField
+      <p className="m-0 mb-6 text-sm font-semibold text-[#7a4f80]">{activeExpert?.role}</p>
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <DcField
           label="Your Name"
           name="name"
           value={form.name}
@@ -55,7 +54,7 @@ export default function BookingModal() {
           error={errors.name}
           placeholder="Full name"
         />
-        <FormField
+        <DcField
           label="Email Address"
           name="email"
           type="email"
@@ -64,7 +63,7 @@ export default function BookingModal() {
           error={errors.email}
           placeholder="you@example.com"
         />
-        <FormField
+        <DcField
           label="Preferred Date"
           name="preferredDate"
           type="date"
@@ -72,7 +71,7 @@ export default function BookingModal() {
           onChange={handleChange}
           error={errors.preferredDate}
         />
-        <FormField
+        <DcField
           label="Anything you'd like to share (optional)"
           name="notes"
           textarea
@@ -80,9 +79,9 @@ export default function BookingModal() {
           onChange={handleChange}
           placeholder="A little context helps your expert prepare."
         />
-        <Button type="submit" className="w-full" isLoading={status === 'loading'}>
+        <PrimaryButton type="submit" className="w-full" isLoading={status === 'loading'}>
           {status === 'loading' ? 'Sending Request...' : 'Confirm Session Request'}
-        </Button>
+        </PrimaryButton>
       </form>
     </Modal>
   )

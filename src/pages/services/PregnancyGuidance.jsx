@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import { PageHero, ServiceSection, BulletList, RelatedLinks } from '../../components/common/ServiceLayout.jsx'
+import { ServiceDetail, InlineLink } from '../../components/common/DesignKit.jsx'
 
 const coverage = [
   'Pregnancy preparation',
@@ -14,37 +13,30 @@ const coverage = [
 
 export default function PregnancyGuidance() {
   return (
-    <main>
-      <PageHero eyebrow="Pregnancy Guidance" h1="Pregnancy Guidance & Support">
-        <p>
-          Pregnancy can bring many questions, especially if you are experiencing it for the first time.
-          Garbhika provides structured pregnancy guidance to help expecting mothers navigate different stages
-          of their journey with greater awareness.
-        </p>
-      </PageHero>
-
-      <ServiceSection heading="Guidance for Your Pregnancy Journey" tint>
-        <BulletList items={coverage} columns={2} />
-      </ServiceSection>
-
-      <ServiceSection heading="Support for First-Time Mothers">
-        <p>
-          A first pregnancy can involve many unfamiliar experiences. Access to appropriate information and
-          support can help first-time mothers better understand what to expect.
-        </p>
-      </ServiceSection>
-
-      <ServiceSection heading="Personalised Pregnancy Guidance" tint>
-        <p>
-          Every pregnancy is different. Guidance should take into account individual circumstances rather
-          than assuming that one approach works for everyone. Explore your{' '}
-          <Link to="/pregnancy-journey/" className="text-primary underline hover:opacity-70">
-            pregnancy journey
-          </Link>{' '}
-          for a stage-by-stage look at what support may help.
-        </p>
-        <RelatedLinks
-          links={[
+    <ServiceDetail
+      to="/services/pregnancy-guidance/"
+      eyebrow="Pregnancy Guidance"
+      title="Pregnancy Guidance & Support"
+      lead="Pregnancy can bring many questions, especially if you are experiencing it for the first time. Garbhika provides structured pregnancy guidance to help expecting mothers navigate different stages of their journey with greater awareness."
+      sections={[
+        { heading: 'Guidance for Your Pregnancy Journey', bullets: coverage },
+        {
+          heading: 'Support for First-Time Mothers',
+          paragraphs: [
+            'A first pregnancy can involve many unfamiliar experiences. Access to appropriate information and support can help first-time mothers better understand what to expect.',
+          ],
+        },
+        {
+          heading: 'Personalised Pregnancy Guidance',
+          paragraphs: [
+            <>
+              Every pregnancy is different. Guidance should take into account individual circumstances rather than
+              assuming that one approach works for everyone. Explore your{' '}
+              <InlineLink to="/pregnancy-journey/">pregnancy journey</InlineLink> for a stage-by-stage look at what
+              support may help.
+            </>,
+          ],
+          links: [
             { label: 'Pregnancy Journey', to: '/pregnancy-journey/' },
             { label: 'Garbh Sanskar', to: '/services/garbh-sanskar/' },
             { label: 'Pregnancy Yoga', to: '/services/pregnancy-yoga/' },
@@ -52,9 +44,9 @@ export default function PregnancyGuidance() {
             { label: 'Psychological Support', to: '/services/psychological-support/' },
             { label: 'Mental Wellness', to: '/services/mental-wellness/' },
             { label: 'Book a Consultation', to: '/book-consultation/' },
-          ]}
-        />
-      </ServiceSection>
-    </main>
+          ],
+        },
+      ]}
+    />
   )
 }
