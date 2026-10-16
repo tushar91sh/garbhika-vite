@@ -1,14 +1,27 @@
 import { useEffect } from 'react'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+  Link,
+} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Layout from './components/layout/Layout.jsx'
 import BookingModal from './components/forms/BookingModal.jsx'
 import Seo from './components/common/Seo.jsx'
-import { RequireAdmin, RequireAuth, GuestOnly } from './components/routing/Guards.jsx'
+import {
+  RequireAdmin,
+  RequireAuth,
+  GuestOnly,
+} from './components/routing/Guards.jsx'
 import { fetchMe, logout } from './features/auth/authSlice.js'
 
+import VerifyEmail from './pages/VerifyEmail.jsx'
+import Onboarding from './pages/Onboarding.jsx'
 import Home from './pages/Home.jsx'
 import AboutUs from './pages/AboutUs.jsx'
 import Services from './pages/Services.jsx'
@@ -52,7 +65,12 @@ function SessionWatcher() {
   useEffect(() => {
     const expired = () => {
       dispatch(logout())
-      navigate('/login', { replace: true })
+      navigate(
+        window.location.pathname.startsWith('/admin')
+          ? '/admin/login'
+          : '/login',
+        { replace: true },
+      )
     }
     window.addEventListener('garbhika:session-expired', expired)
     return () => window.removeEventListener('garbhika:session-expired', expired)
@@ -61,9 +79,45 @@ function SessionWatcher() {
   return null
 }
 
+function RouteLayout({ children }) {
+  const { pathname } = useLocation()
+  const dashboard =
+    /^\/(admin|dashboard)(\/|$)/.test(pathname) &&
+    pathname !== '/admin/login' &&
+    pathname !== '/admin/login/'
+  const auth =
+    /^\/(login|signup|verify-email|forgot-password|reset-password|onboarding)(\/|$)/.test(
+      pathname,
+    ) || /^\/admin\/login\/?$/.test(pathname)
+  if (dashboard) return <>{children}</>
+  if (auth)
+    return (
+      <div className="min-h-screen bg-[#fcf8fd]">
+        <header className="mx-auto flex max-w-[1100px] items-center justify-between px-6 py-5">
+          <Link
+            to="/"
+            className="flex items-center gap-3 text-[#330d3b] no-underline"
+          >
+            <span
+              aria-hidden="true"
+              className="material-symbols-outlined rounded-xl bg-[#330d3b] p-2 text-white"
+            >
+              spa
+            </span>
+            <span className="font-serif text-2xl font-semibold">Garbhika</span>
+          </Link>
+          <Link to="/" className="text-sm text-[#75577f] underline">
+            Back to website
+          </Link>
+        </header>
+        {children}
+      </div>
+    )
+  return <Layout>{children}</Layout>
+}
 export default function App() {
   return (
-    <Layout>
+    <RouteLayout>
       <Seo />
       <SessionWatcher />
       <Routes>
@@ -72,10 +126,19 @@ export default function App() {
         <Route path="/services/" element={<Services />} />
         <Route path="/services/garbh-sanskar/" element={<GarbhSanskar />} />
         <Route path="/services/pregnancy-yoga/" element={<PregnancyYoga />} />
-        <Route path="/services/pregnancy-nutrition/" element={<PregnancyNutrition />} />
-        <Route path="/services/psychological-support/" element={<PsychologicalSupport />} />
+        <Route
+          path="/services/pregnancy-nutrition/"
+          element={<PregnancyNutrition />}
+        />
+        <Route
+          path="/services/psychological-support/"
+          element={<PsychologicalSupport />}
+        />
         <Route path="/services/mental-wellness/" element={<MentalWellness />} />
-        <Route path="/services/pregnancy-guidance/" element={<PregnancyGuidance />} />
+        <Route
+          path="/services/pregnancy-guidance/"
+          element={<PregnancyGuidance />}
+        />
         <Route path="/experts/" element={<Experts />} />
         <Route path="/pregnancy-journey/" element={<Journey />} />
         <Route path="/community/" element={<Community />} />
@@ -86,20 +149,94 @@ export default function App() {
         <Route path="/book-consultation/" element={<BookConsultation />} />
 
         {/* Backward-compat redirects from the previous prototype's routes */}
-        <Route path="/journey" element={<Navigate to="/pregnancy-journey/" replace />} />
-        <Route path="/contact" element={<Navigate to="/contact-us/" replace />} />
-        <Route path="/how-it-works" element={<Navigate to="/services/" replace />} />
-        <Route path="/our-support" element={<Navigate to="/services/" replace />} />
-        <Route path="/pricing" element={<Navigate to="/book-consultation/" replace />} />
+        <Route
+          path="/journey"
+          element={<Navigate to="/pregnancy-journey/" replace />}
+        />
+        <Route
+          path="/contact"
+          element={<Navigate to="/contact-us/" replace />}
+        />
+        <Route
+          path="/how-it-works"
+          element={<Navigate to="/services/" replace />}
+        />
+        <Route
+          path="/our-support"
+          element={<Navigate to="/services/" replace />}
+        />
+        <Route
+          path="/pricing"
+          element={<Navigate to="/book-consultation/" replace />}
+        />
 
-        <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
-        <Route path="/signup" element={<GuestOnly><Signup /></GuestOnly>} />
-        <Route path="/forgot-password" element={<GuestOnly><ForgotPassword /></GuestOnly>} />
+        <Route
+          path="/verify-email"
+          element={
+            <GuestOnly>
+              <VerifyEmail />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/admin/login"
+          element={
+            <GuestOnly>
+              <Login admin />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <RequireAuth>
+              <Onboarding />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <GuestOnly>
+              <Login />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <GuestOnly>
+              <Signup />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <GuestOnly>
+              <ForgotPassword />
+            </GuestOnly>
+          }
+        />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/newsletter/unsubscribe" element={<Unsubscribe />} />
 
-        <Route path="/dashboard" element={<RequireAuth><CustomerDashboard /></RequireAuth>} />
-        <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+        <Route
+          path="/dashboard/*"
+          element={
+            <RequireAuth>
+              <CustomerDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/*"
+          element={
+            <RequireAdmin>
+              <AdminDashboard />
+            </RequireAdmin>
+          }
+        />
 
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
@@ -107,6 +244,6 @@ export default function App() {
       </Routes>
       <BookingModal />
       <ToastContainer position="bottom-right" autoClose={4000} newestOnTop />
-    </Layout>
+    </RouteLayout>
   )
 }
