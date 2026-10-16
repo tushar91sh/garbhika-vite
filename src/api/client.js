@@ -1,5 +1,13 @@
 const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
 export const TOKEN_KEY = 'garbhika_token'
+let memoryToken = null
+export function setSessionToken(token) {
+  memoryToken = token
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token)
+    else localStorage.removeItem(TOKEN_KEY)
+  } catch {}
+}
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -10,10 +18,10 @@ export class ApiError extends Error {
 
 function authHeader() {
   try {
-    const token = localStorage.getItem(TOKEN_KEY)
+    const token = memoryToken || localStorage.getItem(TOKEN_KEY)
     return token ? { Authorization: `Bearer ${token}` } : {}
   } catch {
-    return {}
+    return memoryToken ? { Authorization: `Bearer ${memoryToken}` } : {}
   }
 }
 
@@ -22,13 +30,21 @@ export async function api(path, options = {}) {
   const { body, headers, ...rest } = options
   const response = await fetch(`${API_URL}${path}`, {
     ...rest,
-    headers: { ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...authHeader(), ...headers },
+    headers: {
+      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      ...authHeader(),
+      ...headers,
+    },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
   const data = await response.json().catch(() => ({}))
   if (!response.ok) {
-    if (response.status === 401 && authHeader().Authorization) window.dispatchEvent(new Event('garbhika:session-expired'))
-    throw new ApiError(data.message || 'Request failed. Please try again.', response.status)
+    if (response.status === 401 && authHeader().Authorization)
+      window.dispatchEvent(new Event('garbhika:session-expired'))
+    throw new ApiError(
+      data.message || 'Request failed. Please try again.',
+      response.status,
+    )
   }
   return data
 }
