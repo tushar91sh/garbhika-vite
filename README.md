@@ -1,11 +1,3 @@
-# Garbhika frontend
+# Garbhika - PDF feature update
 
-React, Vite, Redux Toolkit and Tailwind. Read ../SETUP_AUTH_AND_DASHBOARDS.md for configuration, authentication flows and dashboard tabs.
-
-```bash
-npm install
-npm run dev
-npm run build
-```
-
-Development proxies /api to localhost:5000. For a separate production API, set VITE_API_URL to the backend origin ending in /api before building. Never put admin or Brevo credentials into frontend environment variables. Configure hosting fallback to index.html for application routes.
+This archive contains the React + Vite frontend. Read `UPDATE_V2.md` for this update and `SETUP.md` before starting and `FEATURE_AUDIT.md` for the precise scope, remaining gaps and verification results. The archives are intended to be used together. No real provider keys or database credentials are included.

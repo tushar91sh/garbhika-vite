@@ -1,0 +1,26 @@
+:root{--garbhika-language-fonts:'Garbhika devanagari','Garbhika bengali','Garbhika gujarati','Garbhika gurmukhi','Garbhika kannada','Garbhika malayalam','Garbhika oriya','Garbhika tamil','Garbhika telugu','Garbhika arabic','Garbhika meetei-mayek','Garbhika ol-chiki',Inter,system-ui,sans-serif}
+@font-face{font-family:'Garbhika devanagari';src:url('/fonts/noto-devanagari.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="hi"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="brx"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="doi"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="kok"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="mai"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="mr"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="ne"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="sa"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika devanagari',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika bengali';src:url('/fonts/noto-bengali.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="as"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="bn"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika bengali',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika gujarati';src:url('/fonts/noto-gujarati.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="gu"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika gujarati',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika gurmukhi';src:url('/fonts/noto-gurmukhi.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="pa"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika gurmukhi',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika kannada';src:url('/fonts/noto-kannada.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="kn"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika kannada',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika malayalam';src:url('/fonts/noto-malayalam.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="ml"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika malayalam',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika oriya';src:url('/fonts/noto-oriya.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="or"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika oriya',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika tamil';src:url('/fonts/noto-tamil.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="ta"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika tamil',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika telugu';src:url('/fonts/noto-telugu.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="te"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika telugu',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika arabic';src:url('/fonts/noto-arabic.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="ks"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="sd"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined),html[lang="ur"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika arabic',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika meetei-mayek';src:url('/fonts/noto-meetei-mayek.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="mni"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika meetei-mayek',var(--garbhika-language-fonts)!important}
+@font-face{font-family:'Garbhika ol-chiki';src:url('/fonts/noto-ol-chiki.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+html[lang="sat"] :is(.zip-ui,.care-root,.language-control) :not(.material-symbols-outlined){font-family:'Garbhika ol-chiki',var(--garbhika-language-fonts)!important}
+.language-control option{font-family:var(--garbhika-language-fonts)!important}.material-symbols-outlined{font-family:"Material Symbols Outlined"!important}

@@ -1,0 +1,15 @@
+import React from 'react'
+import { UiTag,UiHead,css,routeHref,invoke,connectPage } from './runtime.jsx'
+import { adapt,mountBridge,updateBridge,unmountBridge,captureField } from './bridge.js'
+import { InlineBookingFields,AuthFields,ExtraView,UiSignOut } from './extras.jsx'
+import Navigation from './Navigation.jsx'
+class Component extends React.Component { state = {}; renderVals(){return {}} }
+class Connected extends Component {
+ constructor(props){super(props);this.state=this.state||{}}
+ componentDidMount(){super.componentDidMount?.();mountBridge(this,"NotFound")}
+ componentDidUpdate(prevProps,prevState){updateBridge(this,"NotFound",prevProps,prevState)}
+ componentWillUnmount(){unmountBridge(this);super.componentWillUnmount?.()}
+ render(){const v=adapt(this,this.renderVals(),"NotFound");return <div className="zip-ui zip-NotFound"><><UiHead title={"Page not found — Garbhika"} links={[{"rel": "stylesheet", "href": "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap"}, {"rel": "stylesheet", "href": "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap"}]} css={"*{box-sizing:border-box}body{margin:0;background:#fff7fd;color:#1e1a20;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}a{color:#330d3b}a:hover{color:#7a4f80}"}/><Navigation active={""}/><UiTag tag="main" style={css("position:relative;min-height:100vh;display:grid;place-items:center;padding:140px 24px 80px;text-align:center;overflow:hidden")}><UiTag tag="div" style={css("position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:520px;height:520px;border-radius:999px;background:rgba(233,181,237,0.3);filter:blur(90px);pointer-events:none")}></UiTag><UiTag tag="div" style={css("position:relative;max-width:560px;display:flex;flex-direction:column;align-items:center;gap:20px")}><UiTag tag="span" style={css("font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(96px,16vw,160px);line-height:1;color:#e9b5ed")}>{"404"}</UiTag><UiTag tag="h1" style={css("margin:0;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(32px,4vw,44px);line-height:1.15;color:#0f0014")}>{"This page wandered off the path."}</UiTag><UiTag tag="p" style={css("margin:0;font-size:18px;line-height:1.65;color:#4d444c")}>{"We couldn't find the page you were looking for. Let's guide you back to the sanctuary."}</UiTag><UiTag tag="a" href={routeHref("Home.dc.html")} style={css("margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:999px;background:#0f0014;color:#fff;font-size:16px;font-weight:500;text-decoration:none")} hover={css("background:#330d3b;color:#fff")}>{"Return Home "}<UiTag tag="span" className={"material-symbols-outlined"} style={css("font-size:18px")}>{"arrow_forward"}</UiTag></UiTag></UiTag></UiTag></><BridgeStatus logic={this}/></div>}
+}
+import { BridgeStatus } from './extras.jsx'
+export default connectPage(Connected,"NotFound")

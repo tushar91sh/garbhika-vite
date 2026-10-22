@@ -1,3 +1,8 @@
+import {lazy,Suspense} from 'react'
+const CareDashboard=lazy(()=>import('./ui/Dashboard.jsx'))
+import UiNav from './ui/Navigation.jsx'
+import UiFooter from './ui/Footer.jsx'
+import { ExpertApply } from './care/Expert.jsx'
 import { useEffect } from 'react'
 import {
   Routes,
@@ -44,8 +49,6 @@ import Signup from './pages/Signup.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import Unsubscribe from './pages/Unsubscribe.jsx'
-import CustomerDashboard from './pages/dashboard/CustomerDashboard.jsx'
-import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -82,7 +85,7 @@ function SessionWatcher() {
 function RouteLayout({ children }) {
   const { pathname } = useLocation()
   const dashboard =
-    /^\/(admin|dashboard)(\/|$)/.test(pathname) &&
+    /^\/(admin|dashboard|expert)(\/|$)/.test(pathname) &&
     pathname !== '/admin/login' &&
     pathname !== '/admin/login/'
   const auth =
@@ -90,6 +93,7 @@ function RouteLayout({ children }) {
       pathname,
     ) || /^\/admin\/login\/?$/.test(pathname)
   if (dashboard) return <>{children}</>
+  if (/^\/(login|signup)\/?$/.test(pathname)||/^\/admin\/login\/?$/.test(pathname))return <>{children}</>
   if (auth)
     return (
       <div className="min-h-screen bg-[#fcf8fd]">
@@ -113,7 +117,8 @@ function RouteLayout({ children }) {
         {children}
       </div>
     )
-  return <Layout>{children}</Layout>
+  if(pathname.startsWith('/newsletter/')||pathname==='/join-as-expert')return <><UiNav/>{children}<UiFooter/></>
+  return <>{children}</>
 }
 export default function App() {
   return (
@@ -225,7 +230,7 @@ export default function App() {
           path="/dashboard/*"
           element={
             <RequireAuth>
-              <CustomerDashboard />
+              <Suspense fallback={<p role="status">Loading your workspace…</p>}><CareDashboard /></Suspense>
             </RequireAuth>
           }
         />
@@ -233,11 +238,13 @@ export default function App() {
           path="/admin/*"
           element={
             <RequireAdmin>
-              <AdminDashboard />
+              <Suspense fallback={<p role="status">Loading your workspace…</p>}><CareDashboard /></Suspense>
             </RequireAdmin>
           }
         />
 
+        <Route path="/expert/*" element={<RequireAuth><Suspense fallback={<p role="status">Loading your workspace…</p>}><CareDashboard /></Suspense></RequireAuth>} />
+        <Route path="/join-as-expert" element={<ExpertApply />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="*" element={<NotFound />} />
