@@ -1,0 +1,2 @@
+self.addEventListener('push',event=>{let data={};try{data=event.data.json()}catch{};event.waitUntil(self.registration.showNotification(data.title||'Garbhika',{body:data.body||'Open your dashboard for details.',data:{url:data.url||'/dashboard'}}))});
+self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil(clients.openWindow(new URL(event.notification.data.url,self.location.origin).href))});

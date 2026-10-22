@@ -1,0 +1,33 @@
+import {L} from '../i18n/Locale.jsx'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { get,post } from '../api/client.js'
+import { checkout } from './api.js'
+import { useData,Status,Card,Field,Select,Toggle,Empty,fmt,money } from './ui.jsx'
+const today=()=>new Date().toLocaleDateString('en-CA')
+export default function BookingWizard({onDone}) {
+ const user=useSelector(s=>s.auth.user),experts=useData('/experts'),membership=useData(user?'/me/membership':null)
+ const [step,setStep]=useState(1),[serviceType,setType]=useState(''),[service,setService]=useState(null),[person,setPerson]=useState(null),[date,setDate]=useState(today()),[mode,setMode]=useState('instant'),[slots,setSlots]=useState([]),[start,setStart]=useState(''),[window,setWindow]=useState('morning'),[note,setNote]=useState(''),[pay,setPay]=useState('paid'),[busy,setBusy]=useState(false),[error,setError]=useState(''),[result,setResult]=useState(null)
+ if(!user)return <Card title="Book your session"><L as="p">Sign in and complete your journey profile to book a consultation.</L><Link to="/login?next=/dashboard/sessions">Sign in</Link></Card>
+ if(!['user','mother'].includes(user.role))return <Card title="Mother account required"><L as="p">Consultations can be booked from a mother account.</L></Card>
+ const types=[...new Set((experts.data?.items||[]).flatMap(e=>e.services.map(s=>s.type)))]
+ async function chooseService(e,s){setService(s);setPerson(e);setStep(3);setStart('');setError('');await loadSlots(e.user._id,s._id,date)}
+ async function loadSlots(expertId=person?.user?._id,serviceId=service?._id,d=date){if(!expertId)return;setBusy(true);setError('');try{const data=await get(`/experts/${expertId}/slots?serviceId=${serviceId}&from=${d}&to=${d}`);setSlots(data.items)}catch(e){setError(e.message)}finally{setBusy(false)}}
+ async function confirm(){setBusy(true);setError('');try{
+   const data=await post('/bookings',{serviceId:service._id,mode,startAt:start,date,window,note,paymentKind:mode==='request'?pay:pay})
+   if(pay==='paid')await checkout(data)
+   setResult(data.booking);setStep(5);membership.reload()
+ }catch(e){setError(e.message)}finally{setBusy(false)}}
+ return <div className="care-stack"><div className="care-chips">{['Service','Expert','Time','Confirm'].map((x,i)=><span className="care-badge" key={x}>{i+1}. {x}{step===i+1?' •':''}</span>)}</div>
+ {error&&<L as="p" role="alert" className="care-error">{error}</L>}
+ {step===1&&<Status resource={experts}>{()=> <><L as="h3">What support would you like?</L><div className="care-grid">{types.map(t=><L as="button" key={t} onClick={()=>{setType(t);setStep(2)}}>{({garbh:'Garbh Sanskar',yoga:'Pregnancy Yoga',nutrition:'Nutrition',psych:'Psychological Support',mental:'Mental Wellness',guidance:'Pregnancy Guidance',lactation:'Lactation'})[t]||t}</L>)}</div>{!types.length&&<Empty>Experts will appear after approval and service setup. Please check again soon.</Empty>}</>}</Status>}
+ {step===2&&<><L as="h3">Choose your expert</L><div className="care-grid">{experts.data?.items.filter(e=>e.services.some(s=>s.type===serviceType)).map(e=><Card key={e._id} title={e.user.name}><L as="p">{e.headline}</L><L as="p">{e.languages.join(', ')} · {e.yearsExp||0} years</L><L as="p">★ {Number(e.rating||0).toFixed(1)} ({e.reviewCount} reviews)</L>{e.services.filter(s=>s.type===serviceType).map(s=><div className="care-row" key={s._id}><L as="p">{s.title} · {s.durationMin} min · {money(s.priceInr)}</L><L as="button" onClick={()=>chooseService(e,s)}>Choose session</L></div>)}</Card>)}</div></>}
+ {step===3&&<><L as="h3">Choose a time with {person.user.name}</L><div className="care-chips"><L as="button" className={mode==='instant'?'selected':''} onClick={()=>setMode('instant')}>Pick an available slot</L><L as="button" className={mode==='request'?'selected':''} onClick={()=>setMode('request')}>Request a time</L></div><Field label="Preferred date" type="date" min={today()} value={date} onChange={e=>{setDate(e.target.value);setStart('');if(e.target.value)loadSlots(undefined,undefined,e.target.value)}}/>
+ {mode==='instant'?<><L as="p" className="care-subtle">Times shown in your device timezone: {Intl.DateTimeFormat().resolvedOptions().timeZone}. Availability is managed in IST.</L><div className="care-chips">{slots.map(s=><L as="button" key={s.startAt} className={start===s.startAt?'selected':''} onClick={()=>setStart(s.startAt)}>{fmt(s.startAt)}</L>)}</div>{!slots.length&&!busy&&<Empty>No slots available that day. Choose another date or request a time.</Empty>}</>:<><Select label="Time window (IST)" value={window} onChange={e=>setWindow(e.target.value)} options={[{value:'morning',label:'Morning 8 AM–12 PM'},{value:'afternoon',label:'Afternoon 12–4 PM'},{value:'evening',label:'Evening 4–8 PM'}]}/><Field label="Anything your expert should know?"><textarea maxLength={3000} value={note} onChange={e=>setNote(e.target.value)}/></Field></>}
+ <L as="button" className="primary" disabled={busy||mode==='instant'&&!start||!date} onClick={()=>{setPay((membership.data?.profile.credits||0)>0?'credit':'paid');setStep(4)}}>{busy?'Loading…':'Continue'}</L></>}
+ {step===4&&<Card title="Confirm your session"><L as="p"><L as="strong">{service.title}</L></L><L as="p">{person.user.name} · {service.durationMin} minutes</L><L as="p">{mode==='instant'?fmt(start):`${date} · ${window} (IST)`}</L><L as="p">{money(service.priceInr)}</L><Select label="Payment" value={pay} onChange={e=>setPay(e.target.value)} options={[...((membership.data?.profile.credits||0)>0?[{value:'credit',label:`Use 1 credit (${membership.data.profile.credits} left)`}]:[]),{value:'paid',label:'Pay with UPI / card / netbanking'}]}/><L as="p" className="care-subtle">{mode==='request'?'Payment is authorized now and captured when the expert confirms. Requests expire after 24 hours.':'Full refund at least 12 hours before start; 50% refund for later cancellations. A payment hold lasts 10 minutes.'}</L><L as="button" className="primary" disabled={busy} onClick={confirm}>{busy?'Processing…':mode==='request'?'Send request':pay==='credit'?'Confirm with credit':'Continue to secure payment'}</L></Card>}
+ {step===5&&<Card title={result?.mode==='request'?'Request submitted':'Booking submitted'}><L as="p">{result?.mode==='request'?'Your expert will accept or propose a time within 24 hours.':'Your session is confirmed after credit use or verified payment. The Sessions screen shows its current status.'}</L><L as="button" className="primary" onClick={()=>onDone?.()}>View sessions</L></Card>}
+ {step>1&&step<5&&<L as="button" onClick={()=>{setStep(step-1);setError('')}}>Back</L>}
+ </div>
+}

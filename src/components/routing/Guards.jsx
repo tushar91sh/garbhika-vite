@@ -4,7 +4,7 @@ import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 
 // Where a signed-in user belongs after login.
 export function homePathFor(user) {
-  return user?.role === 'admin' ? '/admin' : '/dashboard'
+  return ['admin','superadmin'].includes(user?.role) ? '/admin' : user?.role==='expert'?'/expert':'/dashboard'
 }
 
 // Only same-site paths are accepted from ?next=, so the login page cannot be used to redirect users elsewhere.
@@ -59,7 +59,7 @@ export function RequireAdmin({ children }) {
         replace
       />
     )
-  if (user.role !== 'admin') {
+  if (!['admin','superadmin'].includes(user.role)) {
     return (
       <main className="mx-auto flex max-w-[640px] flex-col gap-4 px-6 py-24 text-center">
         <h1 className="m-0 font-serif text-[36px] font-medium text-[#0f0014]">

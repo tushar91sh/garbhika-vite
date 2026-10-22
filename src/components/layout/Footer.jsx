@@ -30,6 +30,7 @@ const columns = [
     links: [
       { to: '/experts/#founder', label: 'Founder' },
       { to: '/contact-us/', label: 'Contact Us' },
+      { to: '/join-as-expert', label: 'Become an Expert' },
       { to: '/login', label: 'Log In' },
       { to: '/signup', label: 'Sign Up' },
     ],

@@ -18,6 +18,7 @@ const navLinks = [
   { to: '/experts/', label: 'Experts' },
   { to: '/community/', label: 'Community' },
   { to: '/resources/', label: 'Resources' },
+  { to: '/join-as-expert', label: 'Become an Expert' },
 ]
 
 const serif = "font-['Playfair_Display',serif]"
@@ -32,8 +33,8 @@ const mobileLink = ({ isActive }) =>
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const user = useSelector((state) => state.auth.user)
-  const accountTo = user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'
-  const accountLabel = user ? (user.role === 'admin' ? 'Admin dashboard' : 'My dashboard') : 'Log in'
+  const accountTo = user ? (['admin','superadmin'].includes(user.role) ? '/admin' : user.role==='expert'?'/expert':'/dashboard') : '/login'
+  const accountLabel = user ? (['admin','superadmin'].includes(user.role) ? 'Admin dashboard' : 'My dashboard') : 'Log in'
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -88,7 +89,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-[2px] lg:flex">
+          <div className="hidden items-center gap-[2px] xl:flex">
             <NavLink to="/about-us/" className={navClass}>
               About
             </NavLink>
@@ -166,7 +167,7 @@ export default function Navbar() {
             </Link>
             <button
               type="button"
-              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border-0 bg-[#efe5ee] text-[#0f0014] lg:hidden"
+              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border-0 bg-[#efe5ee] text-[#0f0014] xl:hidden"
               aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((open) => !open)}
@@ -183,7 +184,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mx-auto mt-2 max-h-[calc(100vh-100px)] max-w-[1280px] overflow-y-auto rounded-3xl border border-[rgba(208,195,205,0.7)] bg-[#fff7fd] p-[14px] shadow-[0_24px_70px_rgba(51,13,59,0.2)] lg:hidden"
+            className="mx-auto mt-2 max-h-[calc(100vh-100px)] max-w-[1280px] overflow-y-auto rounded-3xl border border-[rgba(208,195,205,0.7)] bg-[#fff7fd] p-[14px] shadow-[0_24px_70px_rgba(51,13,59,0.2)] xl:hidden"
           >
             <div className="grid gap-[2px]">
               <NavLink to="/about-us/" className={mobileLink}>

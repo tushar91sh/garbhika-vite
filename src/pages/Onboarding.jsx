@@ -1,15 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import JourneyForm from '../components/forms/JourneyForm.jsx'
-export default function Onboarding() {
-  const navigate = useNavigate()
-  return (
-    <section className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="mb-3 font-serif text-4xl">Personalize Your Journey</h1>
-      <p className="mb-8">
-        Tell us which support matters to you. You can update these preferences
-        from your dashboard.
-      </p>
-      <JourneyForm onSaved={() => navigate('/dashboard', { replace: true })} />
-    </section>
-  )
-}
+import { useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
+import { MotherProfile } from '../care/Mother.jsx'
+import '../care/care.css'
+export default function Onboarding(){const navigate=useNavigate(),user=useSelector(s=>s.auth.user);if(user?.role==='expert')return <Navigate to="/expert" replace/>;if(['admin','superadmin'].includes(user?.role))return <Navigate to="/admin" replace/>;return <section className="care-root care-public"><h1>Personalize your journey</h1><p>Tell us your stage and choose how you want to share information with your care team.</p><MotherProfile onSaved={()=>navigate('/dashboard',{replace:true})}/></section>}
