@@ -82,12 +82,22 @@ export const resetPassword = createAsyncThunk(
     }
   },
 )
+// Background refresh must not set checked=false: that unmounts the dashboard
+// and discards unsaved form input whenever an administrator changes a status.
+export const syncSession = createAsyncThunk('auth/syncSession', async (_, { rejectWithValue }) => {
+  try {
+    const data = await get('/auth/me')
+    try { localStorage.setItem(USER_KEY, JSON.stringify(data.user)) } catch {}
+    return data.user
+  } catch (e) { return rejectWithValue({ message: e.message, status: e.status }) }
+}, { condition: (_, { getState }) => !!getState().auth.user && !getState().auth.syncing })
 const initialUser = stored()
 const slice = createSlice({
   name: 'auth',
   initialState: {
     user: initialUser,
     checked: !initialUser,
+    syncing: false,
     status: 'idle',
     error: null,
   },
@@ -141,6 +151,16 @@ const slice = createSlice({
             'Cannot verify your session. Check your connection and retry.'
           state.checked = false
         }
+      })
+    builder
+      .addCase(syncSession.pending, state => { state.syncing = true })
+      .addCase(syncSession.fulfilled, (state, action) => {
+        state.syncing = false
+        if (state.user) state.user = action.payload
+      })
+      .addCase(syncSession.rejected, (state, action) => {
+        state.syncing = false
+        if (action.payload?.status === 401) { state.user = null; clear() }
       })
     builder.addCase(signOut.fulfilled, (state) => {
       state.user = null

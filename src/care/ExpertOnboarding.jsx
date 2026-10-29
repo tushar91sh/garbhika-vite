@@ -38,7 +38,7 @@ export function ExpertApplication(){
 }
 
 export function ApplicationPanel(){
- const r=useData('/expert/profile/application')
+ const r=useData('/expert/profile/application',15000)
  return <Status resource={r}>{d=>d.status==='approved'?<CredentialDocuments/>:<Card title={names[d.status]||'Expert application'}>
   <p><strong>Step 2: Upload all four required documents. Step 3: Submit for review.</strong></p>
   {d.reason&&<p role="status" className="care-warning">Admin feedback: {d.reason}</p>}
