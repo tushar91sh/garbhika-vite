@@ -23,7 +23,7 @@ import {
   RequireAuth,
   GuestOnly,
 } from './components/routing/Guards.jsx'
-import { fetchMe, logout } from './features/auth/authSlice.js'
+import { fetchMe, syncSession, logout } from './features/auth/authSlice.js'
 
 import VerifyEmail from './pages/VerifyEmail.jsx'
 import Onboarding from './pages/Onboarding.jsx'
@@ -79,6 +79,20 @@ function SessionWatcher() {
     return () => window.removeEventListener('garbhika:session-expired', expired)
   }, [dispatch, navigate])
 
+  useEffect(() => {
+    if (!user) return
+    const refresh = () => {
+      if (document.visibilityState !== 'hidden') dispatch(syncSession())
+    }
+    const timer = setInterval(refresh, 15000)
+    window.addEventListener('focus', refresh)
+    document.addEventListener('visibilitychange', refresh)
+    return () => {
+      clearInterval(timer)
+      window.removeEventListener('focus', refresh)
+      document.removeEventListener('visibilitychange', refresh)
+    }
+  }, [dispatch, user?.id, user?._id])
   return null
 }
 
